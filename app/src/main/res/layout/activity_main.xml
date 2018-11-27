@@ -107,6 +107,14 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="38dp"
         android:src="@drawable/exit"/>
+    <ImageButton
+        android:id="@+id/fb_share"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_above="@+id/frameGvGame"
+        android:layout_toRightOf="@id/avatarUser2"
+        android:layout_alignBottom="@id/avatarUser2"
+        android:background="@drawable/sharebutton"/>
 
     <FrameLayout
         android:id="@+id/tooltipChat"
@@ -118,5 +126,13 @@
         android:id="@+id/frameWelcome"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignRight="@id/frameWelcome"
+        android:layout_alignBottom="@id/frameWelcome"/>
 
 </RelativeLayout>

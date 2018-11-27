@@ -7,4 +7,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="CLIENTCONFIRM">C@L@I@E@N@T@ @C@O@N@F@I@R@M</string>
     <string name="SERVERCONFIRM">S@E@R@V@E@R@ @C@O@N@F@I@R@M</string>
+
+
+    <string name="facebook_app_id">995070450687028</string>
+    <string name="fb_login_protocol_scheme">fb995070450687028</string>
 </resources>

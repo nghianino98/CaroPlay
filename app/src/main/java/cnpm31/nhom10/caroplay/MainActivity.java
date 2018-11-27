@@ -27,6 +27,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +46,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,6 +57,7 @@ import cnpm31.nhom10.caroplay.GameBoard.GameBoard;
 import cnpm31.nhom10.caroplay.GameBoard.SingletonSharePrefs;
 
 import static cnpm31.nhom10.caroplay.EditProfileFragment.getCircledBitmap;
+import static cnpm31.nhom10.caroplay.ScreenShot.getScreenShot;
 import static cnpm31.nhom10.caroplay.WelcomeFragment.btnEditProfile;
 
 public class MainActivity extends Activity {
@@ -292,6 +306,14 @@ public class MainActivity extends Activity {
     // region CÁC KHAI BÁO LIÊN QUAN ĐẾN GIAO DIỆN KHÁC
     public static WelcomeFragment welcomeFragment;
     public static FragmentManager fragmentManager;
+
+    //Phần liên quan đến Login và share
+    private CallbackManager callbackManager;
+    private LoginButton loginButton;
+    public ImageButton ShareButton;
+    ShareDialog shareDialog;
+    Bitmap bitmap;
+
     // endregion
 
     @SuppressLint("ResourceType")
@@ -447,6 +469,57 @@ public class MainActivity extends Activity {
                     .commit();
             SingletonSharePrefs.getInstance().put("isFirstLaunch", "TQN");
         }
+
+        /**Login fb**/
+
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email");
+        // If using in a fragment
+        //loginButton.setFragment(this);
+
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+
+        //Nút share
+        shareDialog = new ShareDialog(this);
+        ShareButton = (ImageButton)findViewById(R.id.fb_share);
+        //Share từ thư viện
+//        ShareButton.setOnClickListener(v -> {
+//            Intent intent = new Intent(Intent.ACTION_PICK);
+//            intent.setType("image/*");
+//            startActivityForResult(intent, Select_Image);
+//        });
+        ShareButton.setOnClickListener(v -> {
+            View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+            bitmap=getScreenShot(rootView);
+            SharePhoto photo = new SharePhoto.Builder()
+                    .setBitmap(bitmap)
+                    .build();
+            SharePhotoContent content = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .setShareHashtag(new ShareHashtag.Builder()
+                            .setHashtag("#CaroPlayNhom10Android")
+                            .build())
+                    .build();
+            shareDialog.show(content);
+        });
     }
 
     @Override
@@ -495,6 +568,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+//
+//        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
     }
     // endregion
 }
